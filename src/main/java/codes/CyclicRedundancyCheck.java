@@ -26,7 +26,6 @@ public class CyclicRedundancyCheck implements ErrorCorrectionCode {
 
         return encodedMessage;
     }
-
     @Override
     public boolean[] decode(boolean[] receivedMessage) {
         int n = receivedMessage.length - generatorPolynomial.length + 1;
@@ -37,18 +36,48 @@ public class CyclicRedundancyCheck implements ErrorCorrectionCode {
         while (n < receivedMessage.length) {
             if (receivedMessage[n]) {
                 for (int i = 0; i < generatorPolynomial.length; i++) {
-                    receivedMessage[n + i] ^= generatorPolynomial[i] == 1;
+                    if (receivedMessage[n + i] ^= generatorPolynomial[i] == 1) {
+                        receivedMessage[n + i] = false;
+                    } else {
+                        receivedMessage[n + i] = true;
+                    }
                 }
             }
             n++;
         }
 
-        for (int i = 0; i < n; i++) {
-            if (receivedMessage[receivedMessage.length - i - 1]) {
+        System.arraycopy(receivedMessage, receivedMessage.length - decodedMessage.length, decodedMessage, 0, decodedMessage.length);
+
+        for (int i = 0; i < decodedMessage.length; i++) {
+            if (decodedMessage[i]) {
                 return null; // błąd niekorygowalny
             }
         }
 
         return decodedMessage;
     }
+//    @Override
+//    public boolean[] decode(boolean[] receivedMessage) {
+//        int n = receivedMessage.length - generatorPolynomial.length + 1;
+//        boolean[] decodedMessage = new boolean[n];
+//
+//        System.arraycopy(receivedMessage, 0, decodedMessage, 0, n);
+//
+//        while (n < receivedMessage.length) {
+//            if (receivedMessage[n]) {
+//                for (int i = 0; i < generatorPolynomial.length; i++) {
+//                    receivedMessage[n + i] ^= generatorPolynomial[i] == 1;
+//                }
+//            }
+//            n++;
+//        }
+//
+////        for (int i = 0; i < n; i++) {
+////            if (receivedMessage[receivedMessage.length - i - 1]) {
+////                return null; // błąd niekorygowalny
+////            }
+////        }
+//
+//        return decodedMessage;
+//    }
 }
