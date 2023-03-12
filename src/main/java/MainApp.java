@@ -87,11 +87,26 @@ public class MainApp {
             MessagePrinter.printMessage(decodedMessage);
 
             boolean hasError = ErrorDetector.detectErrors(originalMessage, decodedMessage);
-            if (hasError) {
+            while (hasError) {
                 System.out.println("Wystąpił błąd w transmisji.");
-            } else {
-                System.out.println("Transmisja przebiegła pomyślnie.");
+                System.out.println("Wysłanie pakietu ponownie");
+                encodedMessage = errorCorrectionCode.encode(originalMessage);
+                receivedMessage = channel.transmit(encodedMessage);
+                System.out.println("Wiadomość odebrana:");
+                MessagePrinter.printMessage(receivedMessage);
+                decodedMessage = errorCorrectionCode.decode(receivedMessage);
+                System.out.println("Wiadomość zdekodowana:");
+                MessagePrinter.printMessage(decodedMessage);
+
+                hasError = ErrorDetector.detectErrors(originalMessage, decodedMessage);
+                if (hasError) {
+                    System.out.println("Wystąpił błąd w transmisji po ponownym wysłaniu pakietu.");
+                } else {
+                    System.out.println("Transmisja przebiegła pomyślnie po ponownym wysłaniu pakietu.");
+                }
             }
+            System.out.println("Transmisja przebiegła pomyślnie.");
         }
     }
 }
+

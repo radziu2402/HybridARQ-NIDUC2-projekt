@@ -6,78 +6,54 @@ public class CyclicRedundancyCheck implements ErrorCorrectionCode {
     public CyclicRedundancyCheck(int[] generatorPolynomial) {
         this.generatorPolynomial = generatorPolynomial;
     }
-
-    @Override
+    public static boolean[] intArrayToBoolArray(int[] intArray) {
+        boolean[] boolArray = new boolean[intArray.length];
+        for (int i = 0; i < intArray.length; i++) {
+            boolArray[i] = (intArray[i] == 1);
+        }
+        return boolArray;
+    }
     public boolean[] encode(boolean[] message) {
-        int n = message.length;
-        int r = generatorPolynomial.length - 1;
-        boolean[] encodedMessage = new boolean[n + r];
+        // Copy the message into a new array and append zeros
+        boolean[] encodedMessage = new boolean[message.length + generatorPolynomial.length - 1];
+        System.arraycopy(message, 0, encodedMessage, 0, message.length);
 
-        System.arraycopy(message, 0, encodedMessage, 0, n);
-
-        while (n < encodedMessage.length) {
-            if (encodedMessage[n]) {
-                for (int i = 0; i < generatorPolynomial.length; i++) {
-                    encodedMessage[n + i] ^= generatorPolynomial[i] == 1;
+        // Perform polynomial division to calculate the remainder
+        for (int i = 0; i < message.length; i++) {
+            if (encodedMessage[i]) {
+                for (int j = 0; j < generatorPolynomial.length; j++) {
+                    encodedMessage[i + j] ^= generatorPolynomial[j] != 0;
                 }
             }
-            n++;
         }
-
+        System.arraycopy(message, 0, encodedMessage, 0, message.length);
         return encodedMessage;
     }
-    @Override
+
     public boolean[] decode(boolean[] receivedMessage) {
-        int n = receivedMessage.length - generatorPolynomial.length + 1;
-        boolean[] decodedMessage = new boolean[n];
+        // Copy the received message into a new array
+        boolean[] decodedMessage = new boolean[receivedMessage.length];
+        System.arraycopy(receivedMessage, 0, decodedMessage, 0, receivedMessage.length);
 
-        System.arraycopy(receivedMessage, 0, decodedMessage, 0, n);
-
-        while (n < receivedMessage.length) {
-            if (receivedMessage[n]) {
-                for (int i = 0; i < generatorPolynomial.length; i++) {
-                    if (receivedMessage[n + i] ^= generatorPolynomial[i] == 1) {
-                        receivedMessage[n + i] = false;
-                    } else {
-                        receivedMessage[n + i] = true;
-                    }
+        // Perform polynomial division to check for errors
+        for (int i = 0; i < receivedMessage.length - generatorPolynomial.length + 1; i++) {
+            if (decodedMessage[i]) {
+                for (int j = 0; j < generatorPolynomial.length; j++) {
+                    decodedMessage[i + j] ^= generatorPolynomial[j] != 0;
                 }
             }
-            n++;
         }
 
-        System.arraycopy(receivedMessage, receivedMessage.length - decodedMessage.length, decodedMessage, 0, decodedMessage.length);
-
-        for (int i = 0; i < decodedMessage.length; i++) {
-            if (decodedMessage[i]) {
-                return null; // błąd niekorygowalny
-            }
-        }
-
-        return decodedMessage;
-    }
-//    @Override
-//    public boolean[] decode(boolean[] receivedMessage) {
-//        int n = receivedMessage.length - generatorPolynomial.length + 1;
-//        boolean[] decodedMessage = new boolean[n];
-//
-//        System.arraycopy(receivedMessage, 0, decodedMessage, 0, n);
-//
-//        while (n < receivedMessage.length) {
-//            if (receivedMessage[n]) {
-//                for (int i = 0; i < generatorPolynomial.length; i++) {
-//                    receivedMessage[n + i] ^= generatorPolynomial[i] == 1;
-//                }
+//        // If the remainder is not zero, then there is an error
+//        for (int i = receivedMessage.length - generatorPolynomial.length + 1; i < receivedMessage.length; i++) {
+//            if (decodedMessage[i]) {
+//                return null; // Error detected
 //            }
-//            n++;
 //        }
-//
-////        for (int i = 0; i < n; i++) {
-////            if (receivedMessage[receivedMessage.length - i - 1]) {
-////                return null; // błąd niekorygowalny
-////            }
-////        }
-//
-//        return decodedMessage;
-//    }
+
+        // Remove the zeros appended during encoding
+        boolean[] originalMessage = new boolean[receivedMessage.length - generatorPolynomial.length + 1];
+        System.arraycopy(receivedMessage, 0, originalMessage, 0, originalMessage.length);
+        return originalMessage;
+    }
 }

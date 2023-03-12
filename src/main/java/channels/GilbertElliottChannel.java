@@ -40,7 +40,6 @@ public class GilbertElliottChannel implements Channel {
                 }
             }
         }
-
         return receivedMessage;
     }
 }
