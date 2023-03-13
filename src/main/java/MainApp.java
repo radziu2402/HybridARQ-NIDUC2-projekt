@@ -66,7 +66,8 @@ public class MainApp {
             int[] crc32Poly = {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}; // CRC-32 polynomial: 0x04C11DB7
             errorCorrectionCode = new CyclicRedundancyCheck(crc32Poly);
         }
-
+        System.out.println("Podaj maksymalna liczbę retransmisji");
+        int maxRetransmissions = scanner.nextInt();
         for (int i = 0; i < harqIterations; i++) {
             System.out.println("Iteracja " + (i + 1) + ":");
 
@@ -78,6 +79,7 @@ public class MainApp {
             System.out.println("Wiadomość zakodowana:");
             MessagePrinter.printMessage(encodedMessage);
 
+            int retransmissionCount = 0;
             boolean[] receivedMessage = channel.transmit(encodedMessage);
             System.out.println("Wiadomość odebrana:");
             MessagePrinter.printMessage(receivedMessage);
@@ -88,8 +90,13 @@ public class MainApp {
 
             boolean hasError = ErrorDetector.detectErrors(originalMessage, decodedMessage);
             while (hasError) {
+                retransmissionCount++;
+                if (retransmissionCount > maxRetransmissions) {
+                    System.out.println("Przekroczono maksymalną liczbę retransmisji.");
+                    break;
+                }
                 System.out.println("Wystąpił błąd w transmisji.");
-                System.out.println("Wysłanie pakietu ponownie");
+                System.out.println("Wysłanie pakietu ponownie (retransmisja " + retransmissionCount + ")");
                 encodedMessage = errorCorrectionCode.encode(originalMessage);
                 receivedMessage = channel.transmit(encodedMessage);
                 System.out.println("Wiadomość odebrana:");
@@ -105,8 +112,11 @@ public class MainApp {
                     System.out.println("Transmisja przebiegła pomyślnie po ponownym wysłaniu pakietu.");
                 }
             }
-            System.out.println("Transmisja przebiegła pomyślnie.");
+            if (!hasError) {
+                if(retransmissionCount != 0)
+                System.out.println("Transmisja przebiegła pomyślnie po " + retransmissionCount + " retransmisjach.");
+                else System.out.println("Transmisja przebiegła pomyślnie bez retransmisji.");
+            }
         }
     }
 }
-
