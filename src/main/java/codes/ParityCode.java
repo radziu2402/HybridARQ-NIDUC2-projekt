@@ -1,7 +1,7 @@
 package codes;
 
 
-public class ParityCode implements ErrorCorrectionCode {
+public class ParityCode implements ErrorDetectionCode {
     @Override
     public boolean[] encode(boolean[] message) {
         boolean[] encodedMessage = new boolean[message.length + 1];

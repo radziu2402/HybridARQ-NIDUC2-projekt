@@ -1,13 +1,12 @@
 package codes;
 
-public class HammingCode implements ErrorCorrectionCode {
+import java.util.Arrays;
 
-    private int messageLength;
-    private int parityBits;
-    private int codewordLength;
+public class HammingCode implements ErrorCorrectionCode {
+    private final int parityBits;
+    private final int codewordLength;
 
     public HammingCode(int messageLength) {
-        this.messageLength = messageLength;
         this.parityBits = calculateParityBits(messageLength);
         this.codewordLength = messageLength + parityBits;
     }
@@ -53,17 +52,26 @@ public class HammingCode implements ErrorCorrectionCode {
         }
         return parityValue;
     }
-
     @Override
-    public boolean[] decode(boolean[] receivedMessage) {
-        boolean[] decodedMessage = new boolean[messageLength];
-        int j = 0;
-        for (int i = 0; i < codewordLength; i++) {
+    public boolean[] decode(boolean[] codeword) {
+        boolean[] decodedMessage = new boolean[codewordLength - parityBits];
+        int errorIndex = 0;
+        for (int i = 0, j = 0; i < codewordLength; i++) {
             if (!isPowerOfTwo(i + 1)) {
-                decodedMessage[j] = receivedMessage[i];
+                decodedMessage[j] = codeword[i];
                 j++;
             }
+            else {
+                boolean parityValue = calculateParityValue(codeword, i);
+                if (parityValue != codeword[i]) {
+                    errorIndex += i + 1;
+                }
+            }
         }
-        return decodedMessage;
+        if (errorIndex != 0) {
+            codeword[errorIndex - 1] = !codeword[errorIndex - 1];
+        }
+        return Arrays.copyOfRange(decodedMessage, 0, decodedMessage.length);
     }
+
 }
