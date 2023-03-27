@@ -4,7 +4,7 @@
  * Copyright 2015, Backblaze, Inc.
  */
 
-package library;
+package RScode;
 
 /**
  * A matrix over the 8-bit Galois field.

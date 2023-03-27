@@ -4,7 +4,7 @@
  * Copyright 2015, Backblaze, Inc.
  */
 
-package library;
+package RScode;
 
 /**
  * Reed-Solomon Coding over 8-bit values.

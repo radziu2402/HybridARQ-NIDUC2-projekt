@@ -4,7 +4,7 @@
  * Copyright 2015, Backblaze, Inc.
  */
 
-package library;
+package RScode;
 
 import java.io.File;
 import java.io.FileInputStream;
