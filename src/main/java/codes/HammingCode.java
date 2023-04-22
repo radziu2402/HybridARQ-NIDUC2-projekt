@@ -2,7 +2,7 @@ package codes;
 
 import java.util.Arrays;
 
-public class HammingCode implements ErrorCorrectionCode {
+public class HammingCode implements ErrorDetectionCode {
     private final int parityBits;
     private final int codewordLength;
 
@@ -52,6 +52,7 @@ public class HammingCode implements ErrorCorrectionCode {
         }
         return parityValue;
     }
+
     @Override
     public boolean[] decode(boolean[] codeword) {
         boolean[] decodedMessage = new boolean[codewordLength - parityBits];
@@ -60,8 +61,7 @@ public class HammingCode implements ErrorCorrectionCode {
             if (!isPowerOfTwo(i + 1)) {
                 decodedMessage[j] = codeword[i];
                 j++;
-            }
-            else {
+            } else {
                 boolean parityValue = calculateParityValue(codeword, i);
                 if (parityValue != codeword[i]) {
                     errorIndex += i + 1;
@@ -69,7 +69,7 @@ public class HammingCode implements ErrorCorrectionCode {
             }
         }
         if (errorIndex != 0) {
-            codeword[errorIndex - 1] = !codeword[errorIndex - 1];
+            return null;
         }
         return Arrays.copyOfRange(decodedMessage, 0, decodedMessage.length);
     }

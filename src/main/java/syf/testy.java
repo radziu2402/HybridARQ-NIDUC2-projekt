@@ -1,38 +1,8 @@
+package syf;
+
 import BCHcode.BCH;
 
 public class testy {
-    //    public static void main(String[] args) {
-//        ReedSolomon reedSolomon = new ReedSolomon(4, 2);
-//        byte [][] shards = {
-//                new byte []{1,0,1,0},
-//                new byte []{1,0,0,1},
-//                new byte []{0,0,1,0},
-//                new byte []{1,1,1,1},
-//                new byte []{0,0,0,0},
-//                new byte []{0,0,0,0}
-//        };
-//        reedSolomon.encodeParity(shards, 0, 4);
-//
-//        int numRows = shards.length;
-//        int numCols = shards[0].length;
-//
-//        // Zakoduj tablicę bajtów na ciąg zer i jedynek
-//        String encodedData = BinaryEncoding.encode(shards);
-//        System.out.println("Encoded data: " + encodedData);
-//
-//        // Odkoduj ciąg zer i jedynek na tablicę bajtów
-//        byte[][] decodedData = BinaryEncoding.decode(encodedData, numRows, numCols);
-//        System.out.println("Decoded data: " + Arrays.deepToString(decodedData));
-//
-//        System.out.println(Arrays.deepToString(shards));
-//        System.out.println(reedSolomon.isParityCorrect(shards, 0, 4));
-//        boolean[] present = {true, true, true, true, true, true};
-//        shards[0] = new byte[]{0, 0, 0, 0};
-//        System.out.println(Arrays.deepToString(shards));
-//        reedSolomon.decodeMissing(shards,present,0,4);
-//        System.out.println(Arrays.deepToString(shards));
-//    }
-//}
     public static void main(String[] args) {
         BCH bch = new BCH(15, 7);
         String m;
@@ -48,7 +18,7 @@ public class testy {
         System.out.println("Słowo kodowe = " + c);
         char[] chars = c.toCharArray();
         for (int j = 0; j < c.length(); j++)
-            sb.append((Math.random() > 0.85 ? (chars[j] == '1' ? '0' : '1') : chars[j]));
+            sb.append((Math.random() > 0.75 ? (chars[j] == '1' ? '0' : '1') : chars[j]));
         String newC = sb.toString();
         System.out.println("Odebrane słowo kodowe = " + newC);
         System.out.println("Zdekodowana wiadomość = " + bch.decodingBM(newC));
