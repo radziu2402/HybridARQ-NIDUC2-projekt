@@ -39,13 +39,13 @@ public class MainApp {
         if (errorDetectionCodeChoice == 1) {
             errorDetectionCode = new ParityCode();
         } else if (errorDetectionCodeChoice == 2) {
-            int[] crc8Poly = {1, 0, 0, 1, 1, 0, 0, 0, 0}; // CRC-8 polynomial: x^8 + x^2 + x + 1
+            int[] crc8Poly = {1, 0, 0, 1, 1, 0, 0, 0, 0}; // CRC-8
             errorDetectionCode = new CyclicRedundancyCheck(crc8Poly);
         } else if (errorDetectionCodeChoice == 3) {
-            int[] crc16Poly = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1}; // CRC-16 polynomial: x^16 + x^15 + x^2 + 1
+            int[] crc16Poly = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1}; // CRC-16
             errorDetectionCode = new CyclicRedundancyCheck(crc16Poly);
         } else if (errorDetectionCodeChoice == 4) {
-            int[] crc32Poly = {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}; // CRC-32 polynomial: 0x04C11DB7
+            int[] crc32Poly = {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}; // CRC-32
             errorDetectionCode = new CyclicRedundancyCheck(crc32Poly);
         } else if (errorDetectionCodeChoice == 5) {
             errorDetectionCode = new HammingCode(8);
@@ -56,7 +56,7 @@ public class MainApp {
 
         // Wybór kodu korekcyjnego
         System.out.println("Wybierz kod korekcyjny: ");
-        System.out.println("1. Kod Hamminga");
+        System.out.println("1. Kod BCH");
         System.out.println("2. Kod RS");
 
         int errorCorrectionCodeChoice = scanner.nextInt();
@@ -153,12 +153,12 @@ public class MainApp {
         }
         boolean[] result = GFG.mergeBooleanArray(results);
         byte[] bytes = GFG.booleanArrayToByteArray(result);
+        compareBooleanArrays(result, message);
         ByteArrayInputStream inStreambj = new ByteArrayInputStream(bytes);
         BufferedImage newImage = ImageIO.read(inStreambj);
 
         ImageIO.write(newImage, "BMP", new File("outputImage.bmp"));
         System.out.println("Image generated from the byte array.");
-        compareBooleanArrays(result, message);
     }
 
     public static void compareBooleanArrays(boolean[] array1, boolean[] array2) {
