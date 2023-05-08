@@ -1,12 +1,14 @@
 package codes;
 
-import java.util.Arrays;
 
 public class HammingCode implements ErrorDetectionCode {
+
+    private final int messageLength;
     private final int parityBits;
     private final int codewordLength;
 
     public HammingCode(int messageLength) {
+        this.messageLength = messageLength;
         this.parityBits = calculateParityBits(messageLength);
         this.codewordLength = messageLength + parityBits;
     }
@@ -40,10 +42,16 @@ public class HammingCode implements ErrorDetectionCode {
     }
 
     private boolean isPowerOfTwo(int n) {
-        return n != 0 && (n & (n - 1)) == 0;
+        // Sprawdza, czy liczba jest potęgą dwójki.
+        // Zwraca true, jeśli tak, lub false w przeciwnym przypadku.
+        return (n & (n - 1)) == 0;
     }
 
     private boolean calculateParityValue(boolean[] codeword, int parityIndex) {
+        // Oblicza wartość bitu parzystości dla danej pozycji w ciągu kodowym.
+        // Zwraca true, jeśli liczba jedynek na pozycjach w ciągu kodowym
+        // odpowiadających wartości bitów parzystości jest nieparzysta,
+        // lub false w przeciwnym przypadku.
         boolean parityValue = codeword[parityIndex];
         for (int i = parityIndex + 1; i < codewordLength; i++) {
             if (!isPowerOfTwo(i + 1) && ((i + 1) & (parityIndex + 1)) != 0 && codeword[i]) {
@@ -54,24 +62,22 @@ public class HammingCode implements ErrorDetectionCode {
     }
 
     @Override
-    public boolean[] decode(boolean[] codeword) {
-        boolean[] decodedMessage = new boolean[codewordLength - parityBits];
-        int errorIndex = 0;
-        for (int i = 0, j = 0; i < codewordLength; i++) {
+    public boolean[] decode(boolean[] receivedMessage) {
+        boolean[] decodedMessage = new boolean[messageLength];
+        int j = 0;
+        for (int i = 0; i < codewordLength; i++) {
             if (!isPowerOfTwo(i + 1)) {
-                decodedMessage[j] = codeword[i];
+                decodedMessage[j] = receivedMessage[i];
                 j++;
-            } else {
-                boolean parityValue = calculateParityValue(codeword, i);
-                if (parityValue != codeword[i]) {
-                    errorIndex += i + 1;
-                }
             }
         }
-        if (errorIndex != 0) {
-            return null;
+        for (int i = 0; i < parityBits; i++) {
+            int parityIndex = (int) Math.pow(2, i) - 1;
+            boolean parityValue = calculateParityValue(receivedMessage, parityIndex);
+            if (receivedMessage[parityIndex] != parityValue) {
+                return null;
+            }
         }
-        return Arrays.copyOfRange(decodedMessage, 0, decodedMessage.length);
+        return decodedMessage;
     }
-
 }

@@ -135,7 +135,7 @@ public class BCH {
                 }
             }
         }
-        for (int i = 0; i < first.size() - 1; i++) {/////////////////////////////////////////////////////////////////
+        for (int i = 0; i < first.size() - 1; i++) {
             if (first.get(i).a >= m) {
                 int tmpa = first.get(i).a;
                 int tmpx = first.get(i).x;
@@ -448,12 +448,7 @@ public class BCH {
                 return a == other.a && x == other.x;
             }
         }
-        Comparator<Elem> comparator = new Comparator<Elem>() {
-            @Override
-            public int compare(Elem elem, Elem t1) {
-                return Integer.compare(elem.x, t1.x);
-            }
-        };
+        Comparator<Elem> comparator = (elem, t1) -> Integer.compare(elem.x, t1.x);
 
         int r = 0;
         int L = 0;

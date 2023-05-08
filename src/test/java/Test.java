@@ -24,7 +24,7 @@ public class Test {
         int messageLength = 4;
         boolean[] message = MessageGenerator.generateRandomMessage(messageLength);
         System.out.println(Arrays.toString(message));
-        HammingCode hammingCode = new HammingCode(messageLength);
+        HammingCode hammingCode = new HammingCode(8);
         boolean[] encodedMessage = hammingCode.encode(message);
         System.out.println(Arrays.toString(encodedMessage));
         boolean[] decodedMessage = hammingCode.decode(encodedMessage);

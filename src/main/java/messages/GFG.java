@@ -59,7 +59,7 @@ public class GFG {
         return byteArray;
     }
 
-    public static boolean[][] divideBooleanArray(boolean[] boolArray) {
+    public static boolean[][] divideBooleanArray8(boolean[] boolArray) {
         int size = boolArray.length;
         int numArrays = (size + 7) / 8;
         boolean[][] result = new boolean[numArrays][8];
@@ -76,7 +76,7 @@ public class GFG {
         return result;
     }
 
-    public static boolean[] mergeBooleanArray(boolean[][] boolArrays) {
+    public static boolean[] mergeBooleanArray8(boolean[][] boolArrays) {
         int numRows = boolArrays.length;
         boolean[] result = new boolean[numRows * 8];
 
