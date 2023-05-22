@@ -59,31 +59,61 @@ public class GFG {
         return byteArray;
     }
 
-    public static boolean[][] divideBooleanArray8(boolean[] boolArray) {
-        int size = boolArray.length;
-        int numArrays = (size + 7) / 8;
-        boolean[][] result = new boolean[numArrays][8];
+//    public static boolean[][] divideBooleanArray8(boolean[] boolArray) {
+//        int size = boolArray.length;
+//        int numArrays = (size + 7) / 8;
+//        boolean[][] result = new boolean[numArrays][8];
+//
+//        for (int i = 0; i < numArrays; i++) {
+//            for (int j = 0; j < 8; j++) {
+//                if ((i * 8 + j) < size) {
+//                    result[i][j] = boolArray[i * 8 + j];
+//                } else {
+//                    result[i][j] = false;
+//                }
+//            }
+//        }
+//        return result;
+//    }
+//
+//    public static boolean[] mergeBooleanArray8(boolean[][] boolArrays) {
+//        int numRows = boolArrays.length;
+//        boolean[] result = new boolean[numRows * 8];
+//
+//        for (int i = 0; i < numRows; i++) {
+//            for (int j = 0; j < 8; j++) {
+//                if ((i * 8 + j) < result.length) {
+//                    result[i * 8 + j] = boolArrays[i][j];
+//                }
+//            }
+//        }
+//        return result;
+//    }
+public static boolean[][] divideBooleanArray8(boolean[] boolArray) {
+    int size = boolArray.length;
+    int numArrays = (size + 127) / 128;
+    boolean[][] result = new boolean[numArrays][128];
 
-        for (int i = 0; i < numArrays; i++) {
-            for (int j = 0; j < 8; j++) {
-                if ((i * 8 + j) < size) {
-                    result[i][j] = boolArray[i * 8 + j];
-                } else {
-                    result[i][j] = false;
-                }
+    for (int i = 0; i < numArrays; i++) {
+        for (int j = 0; j < 128; j++) {
+            if ((i * 128 + j) < size) {
+                result[i][j] = boolArray[i * 128 + j];
+            } else {
+                result[i][j] = false;
             }
         }
-        return result;
     }
+    return result;
+}
 
     public static boolean[] mergeBooleanArray8(boolean[][] boolArrays) {
         int numRows = boolArrays.length;
-        boolean[] result = new boolean[numRows * 8];
+        boolean[] result = new boolean[numRows * 128];
 
         for (int i = 0; i < numRows; i++) {
-            for (int j = 0; j < 8; j++) {
-                if ((i * 8 + j) < result.length) {
-                    result[i * 8 + j] = boolArrays[i][j];
+            for (int j = 0; j < 128; j++) {
+                if ((i * 128 + j) < result.length) {
+                    result[i * 128 + j] = boolArrays[i][j];
                 }
             }
         }

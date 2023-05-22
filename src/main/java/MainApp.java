@@ -1,11 +1,9 @@
-import BCHcode.BCH;
 import channels.BinarySymmetricChannel;
 import channels.Channel;
 import channels.GilbertElliottChannel;
 import codes.*;
 import com.casualcoding.reedsolomon.EncoderDecoder;
 import com.google.zxing.common.reedsolomon.ReedSolomonException;
-import messages.MessagePrinter;
 import messages.GFG;
 
 
@@ -34,7 +32,6 @@ public class MainApp {
         System.out.println("2. CRC8 Code");
         System.out.println("3. CRC16 Code");
         System.out.println("4. CRC32 Code");
-        System.out.println("5. Kod Hamminga");
         int errorDetectionCodeChoice = scanner.nextInt();
 
         ErrorDetectionCode errorDetectionCode;
@@ -49,8 +46,6 @@ public class MainApp {
         } else if (errorDetectionCodeChoice == 4) {
             int[] crc32Poly = {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}; // CRC-32
             errorDetectionCode = new CyclicRedundancyCheck(crc32Poly);
-        } else if (errorDetectionCodeChoice == 5) {
-            errorDetectionCode = new HammingCode(8);
         } else {
             System.out.println("Niepoprawny wybór kodu detekcyjnego.");
             return;
@@ -58,18 +53,13 @@ public class MainApp {
 
         // Wybór kodu korekcyjnego
         System.out.println("Wybierz kod korekcyjny: ");
-        //System.out.println("1. Kod BCH");
         System.out.println("1. Kod RS");
 
         int errorCorrectionCodeChoice = scanner.nextInt();
 
-        EncoderDecoder RSencoderDecoder = null;
-        ErrorCorrectionCode errorCorrectionCode = null;
+        EncoderDecoder RSencoderDecoder;
         if (errorCorrectionCodeChoice == 1) {
-            //errorCorrectionCode = new BchCode();
             RSencoderDecoder = new EncoderDecoder();
-//        } else if (errorCorrectionCodeChoice == 2) {
-//
         } else {
             System.out.println("Niepoprawny wybór kodu korekcyjnego.");
             return;
@@ -105,54 +95,54 @@ public class MainApp {
         int[] successCounters = new int[originalMessage.length+2];
         for (boolean[] booleans : originalMessage) {
             System.out.println("Pakiet nr " + k);
-            System.out.println("Wiadomość oryginalna:");
-            MessagePrinter.printMessage(booleans);
+//            System.out.println("Wiadomość oryginalna:");
+//            MessagePrinter.printMessage(booleans);
             k++;
             boolean[] detectionEncodedMessage = errorDetectionCode.encode(booleans);
-            System.out.println("Wiadomość zakodowana kodem detekcyjnym:");
-            MessagePrinter.printMessage(detectionEncodedMessage);
+//            System.out.println("Wiadomość zakodowana kodem detekcyjnym:");
+//            MessagePrinter.printMessage(detectionEncodedMessage);
 
             boolean[] receivedMessage = channel.transmit(detectionEncodedMessage);
-            System.out.println("Wiadomość odebrana:");
-            MessagePrinter.printMessage(receivedMessage);
+//            System.out.println("Wiadomość odebrana:");
+//            MessagePrinter.printMessage(receivedMessage);
 
             boolean[] detectionDecodedMessage = errorDetectionCode.decode(receivedMessage);
             if (detectionDecodedMessage != null) {
-                System.out.println("Wiadomość zdekodowana poprawnie");
-                MessagePrinter.printMessage(detectionDecodedMessage);
+//                System.out.println("Wiadomość zdekodowana poprawnie");
+//                MessagePrinter.printMessage(detectionDecodedMessage);
                 decodedMessages.add(detectionDecodedMessage);
                 successCounters[k] = 1;
             } else {
-                System.out.println("Wystąpił błąd w transmisji, dosyłam część korekcyjna");
+//                System.out.println("Wystąpił błąd w transmisji, dosyłam część korekcyjna");
                 byte[] bytes = GFG.booleanArrayToByteArray(booleans);
-                byte[] encode = RSencoderDecoder.encodeData(bytes, 3);
+                byte[] encode = RSencoderDecoder.encodeData(bytes, 6);
                 boolean[] booleans1 = GFG.byteArrayToBooleanArray(encode);
-                System.out.println("Wiadomość zakodowana korekcyjnym:");
-                MessagePrinter.printMessage(booleans1);
+//                System.out.println("Wiadomość zakodowana korekcyjnym:");
+//                MessagePrinter.printMessage(booleans1);
                 boolean[] receivedMessage1 = channel.transmit(booleans1);
-                System.out.println("Wiadomość odebrana:");
-                MessagePrinter.printMessage(receivedMessage1);
+//                System.out.println("Wiadomość odebrana:");
+//                MessagePrinter.printMessage(receivedMessage1);
                 byte[] bytes1 = GFG.booleanArrayToByteArray(receivedMessage1);
-                byte[] correctionDecodedMessage = RSencoderDecoder.decodeData(bytes1, 3);
+                byte[] correctionDecodedMessage = RSencoderDecoder.decodeData(bytes1, 6);
                 boolean[] receivedMessage2;
                 successCounters[k] = 2;
                 int i = 2;
                 while (correctionDecodedMessage == null) {
                     i++;
                     successCounters[k] = i;
-                    System.out.println("Za duzo bledow w czesci korekcyjnej wiec wysylamy ja znowu");
+//                    System.out.println("Za duzo bledow w czesci korekcyjnej wiec wysylamy ja znowu");
                     receivedMessage2 = channel.transmit(booleans1);
-                    System.out.println("Wiadomość odebrana:");
-                    MessagePrinter.printMessage(receivedMessage2);
+//                    System.out.println("Wiadomość odebrana:");
+//                    MessagePrinter.printMessage(receivedMessage2);
                     bytes1 = GFG.booleanArrayToByteArray(receivedMessage2);
-                    correctionDecodedMessage = RSencoderDecoder.decodeData(bytes1, 3);
+                    correctionDecodedMessage = RSencoderDecoder.decodeData(bytes1, 6);
                 }
                 boolean[] booleans2 = GFG.byteArrayToBooleanArray(correctionDecodedMessage);
-                System.out.println("Wiadomość zdekodowana poprawnie");
-                MessagePrinter.printMessage(booleans2);
+//                System.out.println("Wiadomość zdekodowana poprawnie");
+//                MessagePrinter.printMessage(booleans2);
                 decodedMessages.add(booleans2);
             }
-            System.out.println(" ");
+//            System.out.println(" ");
         }
 
         boolean[][] results = new boolean[decodedMessages.size()][];
@@ -161,7 +151,10 @@ public class MainApp {
         }
         boolean[] result = GFG.mergeBooleanArray8(results);
         byte[] bytes = GFG.booleanArrayToByteArray(result);
-        compareBooleanArrays(result, message);
+        System.out.println(byteArray.length);
+        System.out.println(bytes.length);
+        //compareBooleanArrays(result, message);
+        compareByteArrays(bytes,byteArray);
         countSuccessCounters(successCounters);
 
         ByteArrayInputStream inStreambj = new ByteArrayInputStream(bytes);
@@ -170,27 +163,35 @@ public class MainApp {
         ImageIO.write(newImage, "BMP", new File("outputImage.bmp"));
         System.out.println("Image generated from the byte array.");
     }
-
-    public static void compareBooleanArrays(boolean[] array1, boolean[] array2) {
+    public static void compareByteArrays(byte[] array1, byte[] array2) {
         int differences = 0;
-        if (array1.length != array2.length) {
-            throw new IllegalArgumentException("Arrays must have the same length");
-        } else {
-            for (int i = 0; i < array1.length; i++) {
-                if (array1[i] != array2[i]) {
-                    differences++;
-                }
+
+        // Divide the arrays into packages of 16 bytes
+        int numPackages = Math.min(array1.length / 16, array2.length / 16);
+
+        for (int i = 0; i < numPackages; i++) {
+            // Get the package indexes
+            int startIndex = i * 16;
+            int endIndex = startIndex + 16;
+
+            // Get the package slices from the arrays
+            byte[] package1 = Arrays.copyOfRange(array1, startIndex, endIndex);
+            byte[] package2 = Arrays.copyOfRange(array2, startIndex, endIndex);
+
+            // Compare the packages
+            if (!Arrays.equals(package1, package2)) {
+                differences++;
             }
         }
-        System.out.println("Arrays differ in " + differences + " places.");
+        System.out.println("Arrays differ in " + differences + " packages.");
     }
 
     public static void countSuccessCounters(int[] successCounters) {
         int[] counts = new int[11];
         int otherCount = 0;
-        for (int i = 0; i < successCounters.length; i++) {
-            if (successCounters[i] >= 1 && successCounters[i] <= 10) {
-                counts[successCounters[i]]++;
+        for (int successCounter : successCounters) {
+            if (successCounter >= 1 && successCounter <= 10) {
+                counts[successCounter]++;
             } else {
                 otherCount++;
             }
@@ -199,26 +200,6 @@ public class MainApp {
         for (int i = 1; i <= 10; i++) {
             System.out.println(i + ": " + counts[i]);
         }
-        System.out.println("Pakiety przeslane powyzej 10 razy: " + otherCount);
-    }
-    public static boolean[][] splitBooleanArray5(boolean[] input) {
-        int numOfSubArrays = (int) Math.ceil((double) input.length / 5);
-        boolean[][] result = new boolean[numOfSubArrays][5];
-        for (int i = 0; i < numOfSubArrays; i++) {
-            int startIndex = i * 5;
-            int endIndex = Math.min(startIndex + 5, input.length);
-            result[i] = Arrays.copyOfRange(input, startIndex, endIndex);
-        }
-        return result;
-    }
-    public static boolean[] joinBooleanArrays5(boolean[][] input) {
-        int numOfSubArrays = input.length;
-        int totalLength = numOfSubArrays * 5;
-        boolean[] result = new boolean[totalLength];
-        for (int i = 0; i < numOfSubArrays; i++) {
-            boolean[] subArray = input[i];
-            System.arraycopy(subArray, 0, result, i * 5, subArray.length);
-        }
-        return result;
+        System.out.println("Pakiety przeslane powyzej 10 razy: " + (otherCount-2));
     }
 }

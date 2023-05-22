@@ -20,7 +20,7 @@ public class BinarySymmetricChannel implements Channel {
     }
 
     private boolean transmitBit(boolean bit) {
-        if (Math.random() < errorProbability) {
+        if (Math.random() <= errorProbability) {
             return !bit;
         } else {
             return bit;

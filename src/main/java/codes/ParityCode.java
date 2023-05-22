@@ -18,7 +18,7 @@ public class ParityCode implements ErrorDetectionCode {
     @Override
     public boolean[] decode(boolean[] receivedMessage) {
         int onesCount = 0;
-        for (int i = 0; i < receivedMessage.length; i++) {
+        for (int i = 0; i < receivedMessage.length-1; i++) {
             if (receivedMessage[i]) {
                 onesCount++;
             }

@@ -1,5 +1,4 @@
 import codes.CyclicRedundancyCheck;
-import codes.HammingCode;
 import messages.MessageGenerator;
 import org.junit.jupiter.api.Assertions;
 

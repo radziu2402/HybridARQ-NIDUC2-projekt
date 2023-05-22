@@ -168,7 +168,7 @@ public final class ReedSolomonDecoder {
     }
     if (e != numErrors) {
 //      throw new ReedSolomonException("Error locator degree does not match number of roots");
-      System.out.println("Kod korekcyjny nie jest w stanie naprawic tylu bledow");
+ //     System.out.println("Kod korekcyjny nie jest w stanie naprawic tylu bledow");
       return null;
     }
     return result;
