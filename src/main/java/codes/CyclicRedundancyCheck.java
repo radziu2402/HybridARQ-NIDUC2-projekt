@@ -6,13 +6,7 @@ public class CyclicRedundancyCheck implements ErrorDetectionCode {
     public CyclicRedundancyCheck(int[] generatorPolynomial) {
         this.generatorPolynomial = generatorPolynomial;
     }
-    public static boolean[] intArrayToBoolArray(int[] intArray) {
-        boolean[] boolArray = new boolean[intArray.length];
-        for (int i = 0; i < intArray.length; i++) {
-            boolArray[i] = (intArray[i] == 1);
-        }
-        return boolArray;
-    }
+
     public boolean[] encode(boolean[] message) {
         // Copy the message into a new array and append zeros
         boolean[] encodedMessage = new boolean[message.length + generatorPolynomial.length - 1];
@@ -48,8 +42,8 @@ public class CyclicRedundancyCheck implements ErrorDetectionCode {
         for (int i = receivedMessage.length - generatorPolynomial.length + 1; i < receivedMessage.length; i++) {
             if (decodedMessage[i]) {
 //                System.out.println("Kod detekcyjny wykrył błąd!");
-                boolean[] originalMessage = new boolean[receivedMessage.length - generatorPolynomial.length + 1];
-                System.arraycopy(receivedMessage, 0, originalMessage, 0, originalMessage.length);
+//                boolean[] originalMessage = new boolean[receivedMessage.length - generatorPolynomial.length + 1];
+//                System.arraycopy(receivedMessage, 0, originalMessage, 0, originalMessage.length);
                 return null;
             }
         }

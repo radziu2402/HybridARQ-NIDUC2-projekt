@@ -1,46 +1,44 @@
 package channels;
 
 public class GilbertElliottChannel implements Channel {
-    private final double errorProbability;
-    private final double switchProbability;
-    private final double burstProbability;
+    private final double goodToBadProbability;
+    private final double badToGoodProbability;
+    private final double goodChannelErrorProbability;
+    private final double badChannelErrorProbability;
 
-    public GilbertElliottChannel(double errorProbability, double switchProbability, double burstProbability) {
-        this.errorProbability = errorProbability;
-        this.switchProbability = switchProbability;
-        this.burstProbability = burstProbability;
+    public GilbertElliottChannel(double goodToBadProbability, double badToGoodProbability, double goodChannelErrorProbability, double badChannelErrorProbability) {
+        this.goodToBadProbability = goodToBadProbability;
+        this.badToGoodProbability = badToGoodProbability;
+        this.goodChannelErrorProbability = goodChannelErrorProbability;
+        this.badChannelErrorProbability = badChannelErrorProbability;
     }
 
     @Override
     public boolean[] transmit(boolean[] message) {
         boolean[] receivedMessage = new boolean[message.length];
         boolean inGoodState = true;
-        int burstLength = 0;
 
         for (int i = 0; i < message.length; i++) {
             if (inGoodState) {
-                if (Math.random() < errorProbability) {
+                if (Math.random() < goodChannelErrorProbability) {
                     receivedMessage[i] = !message[i];
                 } else {
                     receivedMessage[i] = message[i];
                 }
-                if (Math.random() < switchProbability) {
+                if (Math.random() < goodToBadProbability) {
                     inGoodState = false;
-                    burstLength = 1;
                 }
             } else {
-                if (Math.random() < burstProbability) {
+                if (Math.random() < badChannelErrorProbability) {
                     receivedMessage[i] = !message[i];
-                    burstLength++;
                 } else {
                     receivedMessage[i] = message[i];
-                    if (++burstLength >= 3) {
-                        inGoodState = true;
-                    }
+                }
+                if (Math.random() < badToGoodProbability) {
+                    inGoodState = true;
                 }
             }
         }
         return receivedMessage;
     }
 }
-

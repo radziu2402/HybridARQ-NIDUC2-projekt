@@ -44,7 +44,8 @@ public class MainApp {
             int[] crc16Poly = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1}; // CRC-16
             errorDetectionCode = new CyclicRedundancyCheck(crc16Poly);
         } else if (errorDetectionCodeChoice == 4) {
-            int[] crc32Poly = {0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1}; // CRC-32
+            int[] crc32Poly = {1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1}; // CRC-32
+            //int[] crc32Poly = {1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1}; // CRC-32
             errorDetectionCode = new CyclicRedundancyCheck(crc32Poly);
         } else {
             System.out.println("Niepoprawny wybór kodu detekcyjnego.");
@@ -71,13 +72,15 @@ public class MainApp {
             double channelParam = scanner.nextDouble();
             channel = new BinarySymmetricChannel(channelParam);
         } else {
-            System.out.println("Podaj wartość pierwszego parametru dla kanału(errorProbability):");
+            System.out.println("Podaj wartość pierwszego parametru dla kanału(goodToBadProbability):");
             double channelParam = scanner.nextDouble();
-            System.out.println("Podaj wartość drugiego parametru dla kanału(switchProbability):");
+            System.out.println("Podaj wartość drugiego parametru dla kanału(badToGoodProbability):");
             double secondChannelParam = scanner.nextDouble();
-            System.out.println("Podaj wartość trzeciego parametru dla kanału(burstProbability):");
+            System.out.println("Podaj wartość trzeciego parametru dla kanału(goodChannelErrorProbability):");
             double thirdChannelParam = scanner.nextDouble();
-            channel = new GilbertElliottChannel(channelParam, secondChannelParam, thirdChannelParam);
+            System.out.println("Podaj wartość czwartego parametru dla kanału(badChannelErrorProbability):");
+            double fourthChannelParam = scanner.nextDouble();
+            channel = new GilbertElliottChannel(channelParam, secondChannelParam, thirdChannelParam, fourthChannelParam);
         }
 
         BufferedImage image = ImageIO.read(new File("C:\\Users\\radziu2402\\Desktop\\sample.bmp"));
@@ -151,8 +154,8 @@ public class MainApp {
         }
         boolean[] result = GFG.mergeBooleanArray8(results);
         byte[] bytes = GFG.booleanArrayToByteArray(result);
-        System.out.println(byteArray.length);
-        System.out.println(bytes.length);
+//        System.out.println(byteArray.length);
+//        System.out.println(bytes.length);
         //compareBooleanArrays(result, message);
         compareByteArrays(bytes,byteArray);
         countSuccessCounters(successCounters);
@@ -180,6 +183,10 @@ public class MainApp {
 
             // Compare the packages
             if (!Arrays.equals(package1, package2)) {
+//                System.out.println("Te pakiety się różnią:");
+//                System.out.println(Arrays.toString(GFG.byteArrayToBooleanArray(package1)));
+//                System.out.println(Arrays.toString(GFG.byteArrayToBooleanArray(package2)));
+//                System.out.println();
                 differences++;
             }
         }
