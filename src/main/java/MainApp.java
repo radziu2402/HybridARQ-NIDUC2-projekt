@@ -38,14 +38,13 @@ public class MainApp {
         if (errorDetectionCodeChoice == 1) {
             errorDetectionCode = new ParityCode();
         } else if (errorDetectionCodeChoice == 2) {
-            int[] crc8Poly = {1, 0, 0, 1, 1, 0, 0, 0, 0}; // CRC-8
+            int[] crc8Poly = {1, 1, 1, 0, 0, 1, 1, 1, 1}; // CRC-8
             errorDetectionCode = new CyclicRedundancyCheck(crc8Poly);
         } else if (errorDetectionCodeChoice == 3) {
             int[] crc16Poly = {1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1}; // CRC-16
             errorDetectionCode = new CyclicRedundancyCheck(crc16Poly);
         } else if (errorDetectionCodeChoice == 4) {
             int[] crc32Poly = {1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1}; // CRC-32
-            //int[] crc32Poly = {1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1}; // CRC-32
             errorDetectionCode = new CyclicRedundancyCheck(crc32Poly);
         } else {
             System.out.println("Niepoprawny wybór kodu detekcyjnego.");
@@ -92,10 +91,10 @@ public class MainApp {
         // create the byte array from image
         byte[] byteArray = outStreamObj.toByteArray();
         boolean[] message = GFG.byteArrayToBooleanArray(byteArray);
-        boolean[][] originalMessage = GFG.divideBooleanArray8(message);
+        boolean[][] originalMessage = GFG.divideBooleanArray(message);
         ArrayList<boolean[]> decodedMessages = new ArrayList<>();
         int k = 1;
-        int[] successCounters = new int[originalMessage.length+2];
+        int[] successCounters = new int[originalMessage.length + 2];
         for (boolean[] booleans : originalMessage) {
             System.out.println("Pakiet nr " + k);
 //            System.out.println("Wiadomość oryginalna:");
@@ -152,20 +151,21 @@ public class MainApp {
         for (int i = 0; i < decodedMessages.size(); i++) {
             results[i] = decodedMessages.get(i);
         }
-        boolean[] result = GFG.mergeBooleanArray8(results);
+        boolean[] result = GFG.mergeBooleanArray(results);
         byte[] bytes = GFG.booleanArrayToByteArray(result);
-//        System.out.println(byteArray.length);
-//        System.out.println(bytes.length);
-        //compareBooleanArrays(result, message);
-        compareByteArrays(bytes,byteArray);
+        compareByteArrays(bytes, byteArray);
         countSuccessCounters(successCounters);
+        System.out.println("Tyle % czasu kanał przebywał w stanie dobrym: " + GilbertElliottChannel.getGoodStatePercentage());
+        System.out.println("Tyle % czasu kanał przebywał w stanie złym: " + GilbertElliottChannel.getBadStatePercentage());
 
         ByteArrayInputStream inStreambj = new ByteArrayInputStream(bytes);
         BufferedImage newImage = ImageIO.read(inStreambj);
 
         ImageIO.write(newImage, "BMP", new File("outputImage.bmp"));
         System.out.println("Image generated from the byte array.");
+
     }
+
     public static void compareByteArrays(byte[] array1, byte[] array2) {
         int differences = 0;
 
@@ -183,14 +183,10 @@ public class MainApp {
 
             // Compare the packages
             if (!Arrays.equals(package1, package2)) {
-//                System.out.println("Te pakiety się różnią:");
-//                System.out.println(Arrays.toString(GFG.byteArrayToBooleanArray(package1)));
-//                System.out.println(Arrays.toString(GFG.byteArrayToBooleanArray(package2)));
-//                System.out.println();
                 differences++;
             }
         }
-        System.out.println("Arrays differ in " + differences + " packages.");
+        System.out.println("Ilość pakietów przepuszczonych z błedem: " + differences);
     }
 
     public static void countSuccessCounters(int[] successCounters) {
@@ -207,6 +203,6 @@ public class MainApp {
         for (int i = 1; i <= 10; i++) {
             System.out.println(i + ": " + counts[i]);
         }
-        System.out.println("Pakiety przeslane powyzej 10 razy: " + (otherCount-2));
+        System.out.println("Pakiety przeslane powyzej 10 razy: " + (otherCount - 2));
     }
 }

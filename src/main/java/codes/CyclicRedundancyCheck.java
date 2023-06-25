@@ -41,9 +41,6 @@ public class CyclicRedundancyCheck implements ErrorDetectionCode {
         // If the remainder is not zero, then there is an error
         for (int i = receivedMessage.length - generatorPolynomial.length + 1; i < receivedMessage.length; i++) {
             if (decodedMessage[i]) {
-//                System.out.println("Kod detekcyjny wykrył błąd!");
-//                boolean[] originalMessage = new boolean[receivedMessage.length - generatorPolynomial.length + 1];
-//                System.arraycopy(receivedMessage, 0, originalMessage, 0, originalMessage.length);
                 return null;
             }
         }
