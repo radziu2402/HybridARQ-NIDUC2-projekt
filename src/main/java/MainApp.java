@@ -82,7 +82,7 @@ public class MainApp {
             channel = new GilbertElliottChannel(channelParam, secondChannelParam, thirdChannelParam, fourthChannelParam);
         }
 
-        BufferedImage image = ImageIO.read(new File("C:\\Users\\radziu2402\\Desktop\\sample.bmp"));
+        BufferedImage image = ImageIO.read(new File("src\\main\\resources\\sample.bmp"));
         // create the object of ByteArrayOutputStream class
         ByteArrayOutputStream outStreamObj = new ByteArrayOutputStream();
         // write the image into the object of ByteArrayOutputStream class
